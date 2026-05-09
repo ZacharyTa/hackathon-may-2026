@@ -68,3 +68,46 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+---
+
+# Project-specific: hackathon-may-2026
+
+## Stack
+- **SvelteKit** (Svelte 5 runes mode) + **TypeScript** + **Tailwind CSS v4**
+- **shadcn-svelte** (v1.2.7, style: nova) for UI components
+- **ESLint** configured with typescript-eslint + eslint-plugin-svelte
+
+## Commands
+- `npm run dev` — dev server
+- `npm run build` — production build
+- `npm run lint` — ESLint
+- `npm run check` — svelte-check
+
+## Structure
+- `frontend/` — single SvelteKit app (no monorepo)
+- `frontend/src/routes/layout.css` — global styles + shadcn CSS variables
+- `frontend/src/lib/utils.ts` — `cn()` helper (clsx + tailwind-merge)
+- `frontend/src/lib/components/ui/` — shadcn components
+
+## shadcn-svelte notes
+- **CLI init is broken non-interactively** (needs TTY for preset prompt). Add components via `npx shadcn-svelte add <component> --yes`
+- `components.json` style must be one of: `nova`, `vega`, `maia`, `lyra`, `mira`, `luma`
+- Generated components live in `src/lib/components/ui/<name>/` — do NOT manually edit unless fixing legacy patterns (CLI updates will overwrite)
+- After adding a component, audit for these legacy patterns and fix in the generated file:
+  - `bind:this` → `{@attach ...}` (preferred in Svelte 5)
+  - `href` without `resolve()` → needs `resolveRouting()` for SvelteKit CS navigation (SE-1343)
+  - `on:click` → `onclick`
+  - `class:` → `class={...}`
+  - `<slot>` → `{#snippet}` + `{@render}`
+  - `$:` → `$derived` / `$effect`
+
+## Svelte 5 conventions (must follow)
+- `$props()` — NEVER `export let`
+- `{@render children()}` — NEVER `<slot>`
+- `onclick={...}` — NEVER `on:click={...}`
+- `$state()` for reactivity, plain `let` otherwise
+- `$derived()` for computed values, NEVER `$:`
+- `$effect` only as escape hatch (prefer event handlers)
+- `{#each items key={item.id}}` — always keyed
+- `{#snippet name()}` + `{@render name()}` for reusable markup
