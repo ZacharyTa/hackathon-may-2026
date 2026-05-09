@@ -1,3 +1,8 @@
+---
+name: svelte-code-writer
+description: Write Svelte 5 components with CLI-assisted validation using @sveltejs/mcp
+---
+
 # Svelte 5 Code Writer
 
 ## CLI Tools

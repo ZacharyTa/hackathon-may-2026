@@ -1,3 +1,8 @@
+---
+name: svelte-best-practices
+description: Guidelines and best practices for writing Svelte 5 components, covering runes, snippets, events, styling, and context
+---
+
 ## `$state`
 
 Only use the `$state` rune for variables that should be _reactive_ — in other words, variables that cause an `$effect`, `$derived` or template expression to update. Everything else can be a normal variable.
